@@ -13,7 +13,7 @@ import (
 	"github.com/klauspost/compress/zstd"
 )
 
-var blockNumberRegex = regexp.MustCompile(`^block-(\d+).tar.zst$`)
+var blockNumberRegex = regexp.MustCompile(`^block-(\d+).json.zst$`)
 
 func IterateTar(batchSize int, tarFileReader io.Reader) arkivevents.BatchIterator {
 
