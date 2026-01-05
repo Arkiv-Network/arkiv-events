@@ -18,13 +18,19 @@ var blockNumberRegex = regexp.MustCompile(`^block-(\d+).json.zst$`)
 func IterateTar(batchSize int, tarFileReader io.Reader) arkivevents.BatchIterator {
 
 	return func(yield func(arkivevents.BatchOrError) bool) {
+		eventsReader, err := zstd.NewReader(nil)
+		if err != nil {
+			yield(arkivevents.BatchOrError{Error: fmt.Errorf("failed to create zstd reader: %w", err)})
+			return
+		}
+		defer eventsReader.Close()
+
 		tarReader := tar.NewReader(tarFileReader)
 
 		batch := arkivevents.BatchOrError{
 			Batch: events.BlockBatch{
 				Blocks: []events.Block{},
 			},
-			Error: nil,
 		}
 
 		for {
@@ -49,14 +55,13 @@ func IterateTar(batchSize int, tarFileReader io.Reader) arkivevents.BatchIterato
 				return
 			}
 
-			eventsReder, err := zstd.NewReader(tarReader)
+			err = eventsReader.Reset(tarReader)
 			if err != nil {
-				yield(arkivevents.BatchOrError{Error: fmt.Errorf("failed to create zstd reader: %w", err)})
+				yield(arkivevents.BatchOrError{Error: fmt.Errorf("failed to reset zstd reader: %w", err)})
 				return
 			}
-			defer eventsReder.Close()
 
-			decoder := json.NewDecoder(eventsReder)
+			decoder := json.NewDecoder(eventsReader)
 			decoder.DisallowUnknownFields()
 
 			block := events.Block{

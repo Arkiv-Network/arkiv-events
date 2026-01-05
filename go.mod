@@ -6,7 +6,7 @@ require (
 	github.com/andybalholm/brotli v1.2.0
 	github.com/ethereum/go-ethereum v1.16.7
 	github.com/google/go-cmp v0.7.0
-	github.com/klauspost/compress v1.16.0
+	github.com/klauspost/compress v1.18.2
 	golang.org/x/sync v0.12.0
 )
 
