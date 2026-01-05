@@ -125,7 +125,7 @@ func TestIterateTar(t *testing.T) {
 
 		// Write tar entry
 		header := &tar.Header{
-			Name: fmt.Sprintf("block-%020d.tar.zst", block.Number),
+			Name: fmt.Sprintf("block-%020d.json.zst", block.Number),
 			Size: int64(zstdBuffer.Len()),
 			Mode: 0644,
 		}

@@ -24,8 +24,10 @@ func IterateTar(batchSize int, tarFileReader io.Reader) arkivevents.BatchIterato
 			Batch: events.BlockBatch{
 				Blocks: []events.Block{},
 			},
-			Error: nil,
 		}
+
+		eventsReder, _ := zstd.NewReader(nil)
+		defer eventsReder.Close()
 
 		for {
 			header, err := tarReader.Next()
@@ -49,12 +51,11 @@ func IterateTar(batchSize int, tarFileReader io.Reader) arkivevents.BatchIterato
 				return
 			}
 
-			eventsReder, err := zstd.NewReader(tarReader)
+			err = eventsReder.Reset(tarReader)
 			if err != nil {
-				yield(arkivevents.BatchOrError{Error: fmt.Errorf("failed to create zstd reader: %w", err)})
+				yield(arkivevents.BatchOrError{Error: fmt.Errorf("failed to reset zstd reader: %w", err)})
 				return
 			}
-			defer eventsReder.Close()
 
 			decoder := json.NewDecoder(eventsReder)
 			decoder.DisallowUnknownFields()
