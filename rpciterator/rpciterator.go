@@ -3,7 +3,6 @@ package rpciterator
 import (
 	"context"
 	"fmt"
-	"iter"
 	"log/slog"
 	"time"
 
@@ -24,7 +23,7 @@ func IterateBlocks(
 	log *slog.Logger,
 	rpcClient *rpc.Client,
 	lastBlockNumber uint64,
-) iter.Seq[arkivevents.BatchOrError] {
+) arkivevents.BatchIterator {
 
 	fetchBlocksInBatch := func(ctx context.Context, startBlock uint64, lastBlockNumber uint64) ([]RawBlock, error) {
 
