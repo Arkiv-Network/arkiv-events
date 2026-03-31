@@ -158,7 +158,7 @@ func IterateBlocks(
 				}
 
 				for i, transaction := range rawBlock.Transactions {
-					if transaction.To != ArkivProcessorAddress {
+					if transaction.To == nil || *transaction.To != ArkivProcessorAddress {
 						continue
 					}
 

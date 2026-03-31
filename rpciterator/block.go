@@ -29,9 +29,11 @@ func (r RawReceipt) CreatedEntities() []common.Hash {
 }
 
 type RawTransaction struct {
-	To   common.Address `json:"to"`
-	From common.Address `json:"from"`
-	Data hexutil.Bytes  `json:"input"`
+	// To is a pointer because it is null for contract creation transactions.
+	// Cf. https://ethereum.org/developers/docs/apis/json-rpc/#eth_gettransactionbyhash
+	To   *common.Address `json:"to"`
+	From common.Address  `json:"from"`
+	Data hexutil.Bytes   `json:"input"`
 }
 
 type RawBlock struct {
